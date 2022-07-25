@@ -251,7 +251,8 @@ class JWT
     {
         return array_merge([
             'sub' => $subject->getJWTIdentifier(),
-            'eml' => $this->hashSubjectEmail( $subject->email )
+            'eml' => $this->hashSubjectEmail( $subject->email ),
+            'cat' => $subject->created_at->getTimestamp()
         ], $this->lockSubject ? ['prv' => $this->hashSubjectModel($subject)] : []);
     }
 
