@@ -251,8 +251,34 @@ class JWT
     {
         return array_merge([
             'sub' => $subject->getJWTIdentifier(),
-            'gid' => $subject->getGlobalIdentifierKey()
+            'eml' => $this->hashSubjectEmail( $subject->email )
         ], $this->lockSubject ? ['prv' => $this->hashSubjectModel($subject)] : []);
+    }
+
+    /**
+     * Hash the email and return it.
+     *
+     * @param  string|object  $model
+     * @return string
+     */
+    protected function hashSubjectEmail($email)
+    {
+        return sha1($email);
+    }
+
+    /**
+     * Check if the subject email matches the one saved in the token.
+     *
+     * @param  string|object  $model
+     * @return bool
+     */
+    public function checkSubjectEmail($email)
+    {
+        if (($eml = $this->payload()->get('eml')) === null) {
+            return true;
+        }
+
+        return $this->hashSubjectEmail($email) === $eml;
     }
 
     /**
